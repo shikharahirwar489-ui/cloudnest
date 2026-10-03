@@ -1,0 +1,3 @@
+import type { Metadata } from 'next';import './globals.css';import {Providers} from '@/components/Providers';import {CookieConsent} from '@/components/CookieConsent';
+export const metadata:Metadata={title:'CloudNest — Your files. Your cloud. Your control.',description:'Private cloud storage with files held by your chosen storage provider.',icons:{icon:'/favicon.svg'}};
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en" suppressHydrationWarning><body><Providers>{children}<div className="fixed bottom-2 left-3 z-40"><CookieConsent/></div></Providers></body></html>}

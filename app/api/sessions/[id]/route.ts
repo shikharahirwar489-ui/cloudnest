@@ -1,0 +1,2 @@
+import {getSession} from '@/lib/auth';import {prisma} from '@/lib/prisma';import {jsonError} from '@/lib/validation';
+export async function DELETE(_req:Request,ctx:{params:Promise<{id:string}>}){const s=await getSession();if(!s)return jsonError('Unauthorized',401);const {id}=await ctx.params;const result=await prisma.session.updateMany({where:{id,userId:s.user.id,revokedAt:null},data:{revokedAt:new Date()}});if(!result.count)return jsonError('Session not found',404);return Response.json({ok:true});}

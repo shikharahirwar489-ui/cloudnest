@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+uploads/
+work/
+.env
+.env.local
+.env.*.local
+*.log
+secrets/
+*.tsbuildinfo

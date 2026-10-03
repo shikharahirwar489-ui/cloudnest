@@ -1,0 +1,2 @@
+import {Logo} from '@/components/Logo';import {AuthForm} from '@/components/AuthForm';
+export default function Register(){return <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6"><div className="mb-10"><Logo/><h1 className="mt-10 text-3xl font-semibold">Create your account</h1><p className="mt-2 text-muted">Your private space starts here.</p></div><AuthForm mode="register"/></main>}

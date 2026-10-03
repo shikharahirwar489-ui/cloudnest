@@ -1,0 +1,1 @@
+import {Dashboard} from '@/components/Dashboard';export default async function Page({params}:{params:Promise<{view:string}>|{view:string}}){const {view}=await params;return <Dashboard view={view==='trash'?'trash':view==='starred'?'starred':view==='recent'?'recent':view==='shared'?'shared':view==='search'?'search':'drive'}/>}

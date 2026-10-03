@@ -1,0 +1,3 @@
+@import '../styles/tokens.css';
+@tailwind base;@tailwind components;@tailwind utilities;
+:root{color-scheme:dark}*{box-sizing:border-box}body{background:#10131b;color:#f4f5f8;font-family:Arial, sans-serif}button,a,input{font:inherit}button,a{transition:all .16s ease} :focus-visible{outline:2px solid #8996ff;outline-offset:3px}.surface{background:#181c27;border:1px solid #292f3d}.muted{color:#9ba4b5}

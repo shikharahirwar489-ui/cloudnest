@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+enum Role {
+  USER
+  ADMIN
+}
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  passwordHash String
+  name String?
+  avatarUrl String?
+  role Role @default(USER)
+  emailVerifiedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[]
+  files File[]
+  folders Folder[]
+  shares ShareLink[]
+  auditLogs AuditLog[]
+  passwordResetTokens PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+}
+model Session {
+  id String @id @default(cuid())
+  userId String
+  tokenHash String @unique
+  userAgent String?
+  ip String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revokedAt DateTime?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+model File {
+  id String @id @default(cuid())
+  ownerId String
+  folderId String?
+  name String
+  originalName String
+  size BigInt
+  mimeType String
+  storageProvider String
+  storageObjectId String
+  telegramFileId String?
+  telegramMessageId String?
+  starred Boolean @default(false)
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  folder Folder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  shares ShareLink[]
+  @@index([ownerId])
+  @@index([folderId])
+  @@index([name])
+  @@index([createdAt])
+  @@index([deletedAt])
+  @@index([starred])
+}
+model Folder {
+  id String @id @default(cuid())
+  ownerId String
+  parentId String?
+  name String
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  parent Folder? @relation("FolderTree", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderTree")
+  files File[]
+  @@index([ownerId])
+  @@index([parentId])
+  @@index([name])
+  @@index([createdAt])
+  @@index([deletedAt])
+}
+model ShareLink {
+  id String @id @default(cuid())
+  fileId String
+  ownerId String
+  token String @unique
+  passwordHash String?
+  expiresAt DateTime?
+  allowDownload Boolean @default(true)
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  @@index([ownerId])
+}
+model AuditLog {
+  id String @id @default(cuid())
+  userId String?
+  action String
+  targetType String?
+  targetId String?
+  ip String?
+  userAgent String?
+  meta Json?
+  createdAt DateTime @default(now())
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@index([userId])
+}
+model PasswordResetToken {
+  id String @id @default(cuid())
+  userId String
+  tokenHash String @unique
+  expiresAt DateTime
+  usedAt DateTime?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+model EmailVerificationToken {
+  id String @id @default(cuid())
+  userId String
+  tokenHash String @unique
+  expiresAt DateTime
+  usedAt DateTime?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
