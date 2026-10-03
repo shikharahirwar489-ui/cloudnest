@@ -87,9 +87,17 @@ export async function DELETE(
     },
   });
   if (!f) return jsonError('File not found in trash', 404);
-  await getStorageProvider().delete(f.storageObjectId, {
-    messageId: f.telegramMessageId,
-  });
+  try {
+    await getStorageProvider().delete(f.storageObjectId, {
+      messageId: f.telegramMessageId,
+    });
+  } catch (error) {
+    console.error('Permanent file deletion failed:', error);
+    return jsonError(
+      'Storage could not confirm deletion. The file remains in Trash; retry later or contact support.',
+      502,
+    );
+  }
   await prisma.file.delete({ where: { id: f.id } });
   await prisma.auditLog.create({
     data: {
